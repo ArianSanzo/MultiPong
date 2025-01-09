@@ -1,0 +1,39 @@
+# Archivos de Python
+*.pyc
+*.pyo
+__pycache__/
+
+# Entornos virtuales
+.venv/
+env/
+venv/
+
+# Archivos de sistema operativo
+*.DS_Store
+Thumbs.db
+
+# Archivos generados por Pygame
+*.bmp
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.wav
+*.ogg
+*.mp3
+*.log
+
+# Archivos temporales o de respaldo
+*.tmp
+*.bak
+*.swp
+*.~*
+
+# Configuraciones del proyecto
+configuracion.json
+*.save
+
+# Archivos de salida de paquetes
+dist/
+build/
+*.egg-info/
