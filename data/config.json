@@ -1,0 +1,22 @@
+{
+  "retro": true,
+  "screen_width": 800,
+  "screen_height": 600,
+  "background_color": [0, 0, 0],
+  "fps": 60,
+  "main_wall_width": 4,
+  "main_wall_resolution": 400,
+  "player_length": 1,
+  "player_speed": 0.1,
+  "players_quantity": 2,
+  "player_movement_configs": [
+    [{
+      "key_code": 119,
+      "key_name": "w"
+    },
+      {
+        "key_code": 115,
+        "key_name": "s"
+      }]
+  ]
+}
