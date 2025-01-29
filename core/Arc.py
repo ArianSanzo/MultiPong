@@ -1,7 +1,7 @@
 import pygame
 import math
 import json
-
+import utils.math_utils as m_utils
 # Loading configurations from a JSON file
 with open('data//config.json', 'r') as f:
     config = json.load(f)
@@ -26,8 +26,10 @@ class Arc:
         self._x_center = x_center
         self._y_center = y_center
         self._radius = radius
-        self._starting_angle = starting_angle  # On radians
-        self._ending_angle = ending_angle  # On radians
+        starting_angle_normalized = m_utils.normalize_angle(starting_angle)
+        self._starting_angle = starting_angle_normalized  # On radians
+        ending_angle_normalized = m_utils.normalize_angle(ending_angle)
+        self._ending_angle = ending_angle_normalized  # On radians
         self._width = width
         self._resolution = resolution
         self._color = color  # RGB
@@ -49,15 +51,24 @@ class Arc:
     def ending_angle(self):
         return self._ending_angle
 
-    # Generates the list of the arc´s points
-    def generate_points(self):
+    def generate_points_in_range(self, resolution, starting_angle, ending_angle):
         points = []
-        for i in range(self._resolution + 1):
-            t = i / self._resolution  # (0% to 100%)
-            angle = self._starting_angle + t * (self._ending_angle - self._starting_angle)
+        for i in range(math.floor(resolution + 1)):
+            t = i / resolution  # (0% to 100%)
+            angle = starting_angle + t * (ending_angle - starting_angle)
+            angle = m_utils.normalize_angle(angle)
             x = self._x_center + self._radius * math.cos(angle)
             y = self._y_center - self._radius * math.sin(angle)
             points.append((x, y, angle))
+        return points
+
+    # Generates the list of the arc´s points
+    def generate_points(self):
+        if self._starting_angle < self._ending_angle:
+            points = self.generate_points_in_range(self._resolution, self.starting_angle(), self.ending_angle())
+        else:
+            points = self.generate_points_in_range(self._resolution / 2, self.starting_angle(), math.pi)
+            points += self.generate_points_in_range(self._resolution / 2, -math.pi, self.ending_angle())
         return points
 
     # Draws the arc

@@ -6,8 +6,9 @@
   "fps": 60,
   "main_wall_width": 4,
   "main_wall_resolution": 400,
+  "player_radius": -40,
   "player_length": 1,
-  "player_speed": 0.1,
+  "player_speed": 0.03,
   "players_quantity": 2,
   "player_movement_configs": [
     [{
@@ -17,6 +18,14 @@
       {
         "key_code": 115,
         "key_name": "s"
+      }],
+    [{
+      "key_code": 105,
+      "key_name": "i"
+    },
+      {
+        "key_code": 107,
+        "key_name": "k"
       }]
   ]
 }

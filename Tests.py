@@ -1,13 +1,11 @@
-import math
+import json
+with open('data//config.json', 'r') as f:
+    config = json.load(f)
 
-speed_x = 10 * math.cos(-math.pi/3)
-speed_y = - 10 * math.sin(-math.pi/3)
+keys_groups = []
+for keys in config['player_movement_configs']:
+    keys_groups.append((keys[0]['key_code'], keys[1]['key_code']))
 
-print(speed_x, speed_y)
+players_and_keys = [[player, movement_key] for player, movement_key in zip([1, 2], keys_groups)]
 
-obj_and_ball_angle = math.atan2(-(50), -100) - math.pi
-obj_and_ball_angle = ((obj_and_ball_angle + math.pi) % (2 * math.pi)) - math.pi
-
-print(-math.pi/2)
-
-print(obj_and_ball_angle)
+print(players_and_keys)
