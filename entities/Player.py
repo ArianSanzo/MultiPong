@@ -1,21 +1,11 @@
 from core.Arc import Arc
 from entities.PlayerGoal import PlayerGoal
-import json
+from data.config import config as cnfg
 import math
 import utils.math_utils as m_utils
 
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
-
-"""
-Player:
-    - Player id (int): id
-    - Average player speed (radians): speed
-    - If player is rotating clockwise (bool): rotates_clockwise
-    - If player is rotating counterclockwise (bool): rotates_counterclockwise
-    For more info look for Arc comments.
-"""
+# Loading configurations
+config = cnfg.data()
 
 
 class Player(Arc):
@@ -23,6 +13,14 @@ class Player(Arc):
 
     def __init__(self, x_center, y_center, radius, starting_angle, ending_angle, width, resolution, sprite,
                  color=(255, 255, 255), speed=(config['player_speed'])):
+        """
+        Player:
+            - Player id (int): id
+            - Average player speed (radians): speed
+            - If player is rotating clockwise (bool): rotates_clockwise
+            - If player is rotating counterclockwise (bool): rotates_counterclockwise
+            For more info look for Arc comments.
+        """
         Player.id += 1
         super().__init__(x_center, y_center, radius, starting_angle, ending_angle, width, resolution, sprite, color)
         self._speed = speed
@@ -53,6 +51,7 @@ class Player(Arc):
         super().draw(screen)
 
     def mid_angle(self):
+        """Calculates the middle players arc angle"""
         if self.starting_angle() < self.ending_angle():
             mid_angle = self.starting_angle() + (self.ending_angle() - self.starting_angle()) / 2
         else:
@@ -61,8 +60,9 @@ class Player(Arc):
             mid_angle = m_utils.normalize_angle(mid_angle)
         return mid_angle
 
-    # Rotates the player clockwise or anticlockwise
     def move(self, goal: PlayerGoal):
+        """Rotates the player clockwise or anticlockwise checking the angles limits and
+         the changes between -pi and pi"""
         if goal.starting_angle() < goal.ending_angle():
             if self.starting_angle() > goal.starting_angle() and self.ending_angle() < goal.ending_angle():
                 if self._rotates_clockwise:

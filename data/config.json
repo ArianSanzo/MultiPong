@@ -27,5 +27,6 @@
         "key_code": 107,
         "key_name": "k"
       }]
-  ]
+  ],
+  "ball_speed": 5
 }

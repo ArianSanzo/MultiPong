@@ -1,26 +1,25 @@
 import pygame
 import math
-import json
+from data.config import config as cnfg
 import utils.math_utils as m_utils
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
 
-"""
-Arc:
-    - circle's center cartesian coordinates: x_center; y_center
-    - circle radius: radius
-    - start of the circle's segment (on radians, -pi to pi): starting_angle
-    - ending of the circle's segment (on radians, -pi to pi): ending_angle
-    - arc's width (for drawing): width
-    - arc's resolution (points quantity): resolution
-    - arc's color (RGB): color
-    - arc's points (list of cartesian coordinates): points
-    - arc's sprite (.png): sprite
-"""
+# Loading configurations
+config = cnfg.data()
 
 
 class Arc:
+    """
+    Arc:
+        - circle's center cartesian coordinates: x_center; y_center
+        - circle radius: radius
+        - start of the circle's segment (on radians, -pi to pi): starting_angle
+        - ending of the circle's segment (on radians, -pi to pi): ending_angle
+        - arc's width (for drawing): width
+        - arc's resolution (points quantity): resolution
+        - arc's color (RGB): color
+        - arc's points (list of cartesian coordinates): points
+        - arc's sprite (.png): sprite
+    """
     def __init__(self, x_center, y_center, radius, starting_angle, ending_angle, width, resolution, sprite,
                  color=(255, 255, 255)):
         self._x_center = x_center
@@ -52,6 +51,7 @@ class Arc:
         return self._ending_angle
 
     def generate_points_in_range(self, resolution, starting_angle, ending_angle):
+        """Generates 'resolution' number of points from the starting_angle to the ending_angle"""
         points = []
         for i in range(math.floor(resolution + 1)):
             t = i / resolution  # (0% to 100%)
@@ -62,8 +62,8 @@ class Arc:
             points.append((x, y, angle))
         return points
 
-    # Generates the list of the arc´s points
     def generate_points(self):
+        """Calls to generate_points_in_range checking the order of the angles first"""
         if self._starting_angle < self._ending_angle:
             points = self.generate_points_in_range(self._resolution, self.starting_angle(), self.ending_angle())
         else:
@@ -71,8 +71,8 @@ class Arc:
             points += self.generate_points_in_range(self._resolution / 2, -math.pi, self.ending_angle())
         return points
 
-    # Draws the arc
     def draw(self, screen):
+        """Draws the arc on a screen drawing point by point"""
         if len(self._points) > 1:
             if config['retro']:
                 x_y_only_list = []

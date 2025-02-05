@@ -2,12 +2,11 @@ from entities.Player import Player
 from entities.PlayerGoal import PlayerGoal
 from entities.Ball import Ball
 import math
-import json
+from data.config import config as cnfg
 from utils.math_utils import normalize_angle
 
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
+# Loading configurations
+config = cnfg.data()
 
 
 class BotPlayer(Player):
@@ -35,6 +34,8 @@ class BotPlayer(Player):
         super().not_rotates_counterclockwise()
 
     def chase_ball(self, ball: Ball, goal: PlayerGoal):
+        """Calculates the relative position between the ball and the center of the bots arc,
+        then changes the rotation"""
         mid_angle = self.mid_angle()
         if goal.starting_angle() < goal.ending_angle():
             if ball.angle_from_center() < mid_angle:
@@ -44,7 +45,6 @@ class BotPlayer(Player):
                 self.rotates_counterclockwise()
                 self.not_rotates_clockwise()
         else:
-            print(self.mid_angle(), ball.angle_from_center())
             if (self.mid_angle() < 0 and ball.angle_from_center() < 0) or (self.mid_angle() > 0 and ball.angle_from_center() > 0):
                 if ball.angle_from_center() < mid_angle:
                     self.not_rotates_counterclockwise()

@@ -1,6 +1,5 @@
 import math
 import pygame
-import json
 from entities.Player import Player
 from entities.PlayerGoal import PlayerGoal
 from entities.BotPlayer import BotPlayer
@@ -9,10 +8,11 @@ from entities.Ball import Ball
 from factories.wall_factory import WallFactory
 from factories.player_factory import PlayerFactory
 from itertools import zip_longest
+from data.config import config as cnfg
 
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
+# Loading configurations
+config = cnfg.data()
+
 
 # Getting keys for players
 keys_groups = []
@@ -36,18 +36,18 @@ main_wall = Wall(config['screen_width'] / 2,  config['screen_height'] / 2,
 
 # Trial walls
 walls = []
-for _ in range(5):
+for _ in range(0):
     walls.append(WallFactory.create_wall())
 
 
 # Trial players
-players_and_goals = PlayerFactory.create_player('bot', 2)
+players_and_goals = PlayerFactory.create_player(0, 4)
 players = players_and_goals[0]
 goals = players_and_goals[1]
 
 # Trial ball
 trial_ball = Ball(config['screen_width'] / 2, config['screen_height'] / 2,
-                  10, -math.pi/2, 5,
+                  10, -math.pi/2, config['ball_speed'],
                   (255, 255, 255), "")
 
 # Main game loop

@@ -1,23 +1,23 @@
 from entities.Player import Player
 from entities.PlayerGoal import PlayerGoal
-import json
+from data.config import config as cnfg
 import math
 from entities.BotPlayer import BotPlayer
 
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
+# Loading configurations
+config = cnfg.data()
 
 
 class PlayerFactory:
     @staticmethod
-    def create_player(player_type, quantity):
+    def create_player(players_quantity, bots_quantity):
         players = []
         goals = []
-        if player_type == 'player':
-            for i in range(quantity):
-                mid_angle = 2 * math.pi * i / quantity
-                distance_mid_angle = 1 / quantity
+        total = players_quantity + bots_quantity
+        if True:
+            for i in range(players_quantity):
+                mid_angle = 2 * math.pi * i / total
+                distance_mid_angle = 1 / total
                 goal_length = distance_mid_angle * 2
                 player = Player(
                     config['screen_width'] / 2, config['screen_height'] / 2,
@@ -34,10 +34,10 @@ class PlayerFactory:
                 )
                 players.append(player)
                 goals.append(goal)
-        elif player_type == "bot":
-            for i in range(quantity):
-                mid_angle = 2 * math.pi * i / quantity
-                distance_mid_angle = 1 / quantity
+        if True:
+            for i in range(players_quantity, total):
+                mid_angle = 2 * math.pi * i / total
+                distance_mid_angle = 1 / total
                 goal_length = distance_mid_angle * 2
                 player = BotPlayer(
                     config['screen_width'] / 2, config['screen_height'] / 2,

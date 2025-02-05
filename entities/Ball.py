@@ -1,29 +1,28 @@
 import math
 import pygame
+import random
 from core.Arc import Arc
 from entities.Player import Player
 from entities.PlayerGoal import PlayerGoal
 import utils.math_utils as m_utils
-import json
+from data.config import config as cnfg
 
-# Loading configurations from a JSON file
-with open('data//config.json', 'r') as f:
-    config = json.load(f)
-
-"""
-Ball:
-    - ball's center cartesian coordinates: x; y
-    - ball's radius: radius
-    - ball's direction's angle (radians): direction_angle
-    - ball's speed: speed
-    - ball's speed components (speed on x and y) obtained from speed and direction_angle 
-    - ball's color (RGB): color
-    - ball's sprite (.png): sprite
-    - last touched by a Player object
-"""
+# Loading configurations
+config = cnfg.data()
 
 
 class Ball:
+    """
+    Ball:
+        - ball's center cartesian coordinates: (x; y)
+        - ball's radius: radius
+        - ball's direction's angle (radians): direction_angle
+        - ball's speed: speed
+        - ball's speed components (speed on x and y) obtained from speed and direction_angle
+        - ball's color (RGB): color
+        - ball's sprite (.png): sprite
+        - last touched by a Player object
+    """
     def __init__(self, x, y, radius, direction_angle, speed, color, sprite):
         self._x = x
         self._y = y
@@ -45,12 +44,15 @@ class Ball:
         self._speed_components = self.speed_components()
 
     def reset(self):
-        self._x = 400
-        self._y = 300
+        """Resets the ball to the center of the screen, the last touch and its speed"""
+        self._x = config['screen_width'] / 2
+        self._y = config['screen_height'] / 2
+        self._speed = config['ball_speed']
+        self.update_speed_components()
         self._last_touch = None
 
     def angle_from_center(self):
-        # Angle between the ball and the center of the screen
+        """Calculates the angle between the ball and the center of the screen"""
         angle_from_center = math.atan2(-(config['screen_height']/2 - self._y),
                                        config['screen_width'] / 2 - self._x) - math.pi
 
@@ -60,6 +62,7 @@ class Ball:
         return angle_from_center
 
     def move(self, obj_list):
+        """Moves the position of the ball (updating x and y) depending on the collisions"""
         for obj in obj_list:
             if isinstance(obj, Arc):
 
@@ -87,17 +90,23 @@ class Ball:
 
                 if (case_one or case_two) and inside_radius:
                     # Reflects the angle on 180 grades (pi)
-                    new_angle = self._direction_angle + math.pi
+                    if angle_diff > 0.01:
+                        new_angle = self._direction_angle + math.pi
+                    else:
+                        new_angle = self._direction_angle + math.pi * 3 / 4
 
                     # Adds the angle difference to give it a more natural collision
                     if self._direction_angle < obj_and_ball_angle:
-                        new_angle += angle_diff * 2
+                        new_angle += angle_diff * random.uniform(1.7, 2.3)
                     else:
-                        new_angle -= angle_diff * 2
+                        new_angle -= angle_diff * random.uniform(1.7, 2.3)
 
                     # Changes the ball's speed angle and updates speed's components
                     self.change_direction_angle(new_angle)
                     self.update_speed_components()
+                    self._speed += 1.01
+                    self._x += self._speed_components[0] * 1.3
+                    self._y += self._speed_components[1] * 1.3
 
                     # Saves the last player that touched the ball
                     if isinstance(obj, Player):
@@ -122,4 +131,5 @@ class Ball:
         self._direction_angle = new_angle
 
     def draw(self, display):
+        """Draws the ball on a screen"""
         pygame.draw.circle(display, self._color, (self._x, self._y), self._radius)

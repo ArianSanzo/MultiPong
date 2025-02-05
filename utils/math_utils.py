@@ -1,8 +1,8 @@
 import math
 
 
-# Normalizes an angle between -pi and pi
 def normalize_angle(angle):
+    """Normalizes an angle between -pi and pi"""
     if angle == math.pi:
         new_angle = angle
     else:
